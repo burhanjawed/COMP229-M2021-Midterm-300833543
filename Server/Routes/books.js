@@ -21,9 +21,23 @@ router.get('/', (req, res, next) => {
         }
     });
 });
-router.get('/add', (req, res, next) => {
+router.get('/details', (req, res, next) => {
+    res.render('books/details', { title: 'Add Book', page: '/books/details', books: '' });
 });
-router.post('/add', (req, res, next) => {
+router.post('/details', (req, res, next) => {
+    let newBook = new books_1.default({
+        "Title": req.body.title,
+        "Price": req.body.price,
+        "Author": req.body.author,
+        "Genre": req.body.genre
+    });
+    books_1.default.create(newBook, (err) => {
+        if (err) {
+            console.error(err);
+            res.end(err);
+        }
+        res.redirect('/books');
+    });
 });
 router.get('/:id', (req, res, next) => {
 });

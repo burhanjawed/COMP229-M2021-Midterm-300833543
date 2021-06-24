@@ -58,20 +58,49 @@ router.post('/details', (req, res, next) => {
 });
 
 // GET the Book Details page in order to edit an existing Book
-router.get('/:id', (req, res, next) => {
+router.get('/details/:id', (req, res, next) => {
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+  let id = req.params.id;
+
+  // pass the id to db
+  book.findById(id, {}, {}, (err, bookItemToEdit) =>
+  {
+      if(err)
+      {
+          console.error(err);
+          res.end(err);
+      }
+
+      // show the edit view
+      res.render('books/details', {title: 'Edit Book', page: '/books/details', books: bookItemToEdit});
+  });
 });
 
 // POST - process the information passed from the details form and update the document
-router.post('/:id', (req, res, next) => {
+router.post('/details/:id', (req, res, next) => {
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+  let id = req.params.id;
 
+  // instantiate a new Book
+  let updatedBook = new book
+  ({
+    "_id": id,
+    "Title": req.body.title,
+    "Price": req.body.price,
+    "Author": req.body.author,
+    "Genre": req.body.genre
+  });
+
+  // find the contact by id and update
+  book.updateOne({_id: id}, updatedBook, {}, (err) =>{
+      if(err)
+      {
+          console.error(err);
+          res.end(err);
+      }
+
+      res.redirect('/books');
+  });
 });
 
 // GET - process the delete by user id
